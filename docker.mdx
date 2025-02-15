@@ -1,0 +1,71 @@
+redis:
+image: redis:7 # Uses official Redis image version 7
+container_name: redis # Names the container 'redis'
+restart: always # Automatically restarts if it crashes
+ports: - "6379:6379" # Maps host port 6379 to container port 6379
+
+api:
+build: . # Builds image using local Dockerfile
+container_name: notification-api
+restart: always
+depends_on: - redis # Ensures redis starts before this service
+environment: - REDIS_HOST=redis # Environment variable for Redis connection - PORT=3000 # Sets API port to 3000
+ports: - "3000:3000" # Maps host port 3000 to container port 3000
+
+Explain all these statements in detail ?
+
+I'll explain each part of this Docker Compose file in detail:
+Version
+'
+
+- This specifies the Docker Compose file format version
+  3.8 is a modern version that supports most current Docker features
+  Services
+  The file defines 3 services: redis, api, and worker. Let's break down each one:
+
+1. Redis Service
+   6379
+
+- This sets up a Redis database server
+  Port 6379 is Redis's default port
+  The service will be accessible to other containers as 'redis'
+
+2. API Service
+   3000
+
+- This is your main API service
+  It's built from a local Dockerfile
+  It depends on Redis being available
+  Exposes port 3000 for API access
+
+Explain all these statements in detail ?
+
+I'll explain each part of this Docker Compose file in detail:
+Version
+'
+
+- This specifies the Docker Compose file format version
+  3.8 is a modern version that supports most current Docker features
+  Services
+  The file defines 3 services: redis, api, and worker. Let's break down each one:
+
+1. Redis Service
+   6379
+
+- This sets up a Redis database server
+  Port 6379 is Redis's default port
+  The service will be accessible to other containers as 'redis'
+
+2. API Service
+   3000
+
+- This is your main API service
+  It's built from a local Dockerfile
+  It depends on Redis being available
+  Exposes port 3000 for API access
+
+3. Worker Service
+
+- This is a separate service that runs a worker
+  It also depends on Redis
+  It runs a different script (worker.js)

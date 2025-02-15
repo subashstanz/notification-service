@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  api:
+    build: .  # Uses Dockerfile to build the image
+    container_name: notification-api
+    restart: always
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    command: ["node", "index.js"]  
+
+  worker:
+    build: .  # Uses the same Dockerfile but runs a worker
+    container_name: worker
+    restart: always
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379   
+    command: ["node", "worker.js"]  # Runs worker instead of API
+
+
+
+    
